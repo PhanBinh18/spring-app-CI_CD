@@ -31,3 +31,21 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# Maven
+target/
+.idea/
+
+# Windows
+*.log
+
+# Maven Wrapper
+.mvn/
+mvnw
+mvnw.cmd
+
+# Attribute
+.gitattributes
+
+# Ignore test file
+src/test
