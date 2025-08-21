@@ -50,4 +50,3 @@ mvnw.cmd
 # Ignore test file
 src/test
 
-.env
