@@ -54,4 +54,4 @@ jobs:
             
             # Chạy container mới từ image vừa kéo về
             # Đổi -p 8080:8080 thành cổng phù hợp với ứng dụng của bạn
-            docker run -d --name demo1-app-container -p 8080:8080 ${{ secrets.DOCKERHUB_USERNAME }}/demo1-app:${{ github.sha }}
+            
