@@ -42,16 +42,28 @@ jobs:
           username: ${{ secrets.SERVER_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            # Kéo (pull) image mới nhất từ Docker Hub về server
+            # Đăng nhập vào Docker Hub trên server (quan trọng nếu image là private)
+            echo ${{ secrets.DOCKERHUB_TOKEN }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+            
+            # Kéo image mới nhất từ Docker Hub về server
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/demo1-app:${{ github.sha }}
             
-            # Dừng container cũ đang chạy (nếu có)
+            # Dừng và xóa container cũ nếu đang chạy
             # Dùng '|| true' để lệnh không báo lỗi nếu container chưa tồn tại
-            docker stop demo1-app-container || true
-            
-            # Xóa container cũ (nếu có)
-            docker rm demo1-app-container || true
+            docker stop spring-app-container || true
+            docker rm spring-app-container || true
             
             # Chạy container mới từ image vừa kéo về
-            # Đổi -p 8080:8080 thành cổng phù hợp với ứng dụng của bạn
+            # Truyền các biến môi trường kết nối tới AWS DB vào container
+            docker run -d \
+              --name spring-app-container \
+              -p 8080:8080 \
+              -e SPRING_DATASOURCE_URL=${{ secrets.AWS_DB_URL }} \
+              -e SPRING_DATASOURCE_USERNAME=${{ secrets.AWS_DB_USERNAME }} \
+              -e SPRING_DATASOURCE_PASSWORD=${{ secrets.AWS_DB_PASSWORD }} \
+              -e SPRING_PROFILES_ACTIVE=production \
+              --restart always \
+              ${{ secrets.DOCKERHUB_USERNAME }}/demo1-app:${{ github.sha }}
             
+            # (Tùy chọn) Xóa các image cũ không còn được sử dụng để dọn dẹp
+            docker image prune -f
