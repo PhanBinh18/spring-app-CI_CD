@@ -57,7 +57,7 @@ jobs:
             # Truyền các biến môi trường kết nối tới AWS DB vào container
             docker run -d \
               --name spring-app-container \
-              -p 8080:8080 \
+              -p 30120:8080 \
               -e SPRING_DATASOURCE_URL=${{ secrets.AWS_DB_URL }} \
               -e SPRING_DATASOURCE_USERNAME=${{ secrets.AWS_DB_USERNAME }} \
               -e SPRING_DATASOURCE_PASSWORD=${{ secrets.AWS_DB_PASSWORD }} \
